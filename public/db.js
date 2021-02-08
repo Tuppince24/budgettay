@@ -15,5 +15,37 @@ request.onsuccess = function(e){
 };
 
 request.onerror = function(e) {
-    console.log()
+    console.log("Broke boy! " + e.target.errorCode);
+};
+
+function saveRecord(r) {
+    const transaction = db.transaction(["pending"], "readwrite");
+    const store = transaction.ObjectStore("pending");
+
+    store.add(r);
+}
+
+function checkDatabase() {
+    const transaction = db.transaction(["pending"], "readwrite");
+    const store = transaction.ObjectStore("pending")
+    const getALL = store.getALL();
+
+    getALL.onsuccess = function() {
+        if(getALL.result.length > 0) {
+            fetch("/api/transaction/bulk", {
+                method: "POST",
+                body: JSON.stringify(getALL.result),
+                headers: {
+                    Accept: "application/json, */*, text/plain",
+                    "content-type": "application/json"
+                }
+            })
+            .then(response => response.json())
+                .then(() => {
+                    const transaction = db.transaction(["pending"], "readwrite");
+                    const store = transaction.ObjectStore("pending");
+                    store.clear();
+                });
+        }
+    }
 }
