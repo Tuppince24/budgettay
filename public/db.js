@@ -49,3 +49,10 @@ function checkDatabase() {
         }
     }
 }
+function deletePending() {
+    const transaction = db.transaction(["pending"], "readwrite");
+    const store = transaction.ObjectStore("pending");
+    store.clear();
+}
+
+window.addEventListener("online", checkDatabase);
