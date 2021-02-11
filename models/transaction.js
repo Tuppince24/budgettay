@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // there is no mlab
 
 const Schema = mongoose.Schema;
 
